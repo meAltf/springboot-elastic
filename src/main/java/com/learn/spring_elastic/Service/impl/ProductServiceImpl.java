@@ -31,4 +31,24 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
         return productDTOList;
     }
+
+    @Override
+    public List<ProductDTO> saveProductsDetail(List<ProductDTO> productDTOs) {
+        // convert DTO to entities
+        List<Product> productList = productDTOs.stream()
+                .map(productDto -> modelMapper.map(productDto, Product.class))
+                .toList();
+
+        Iterable<Product> savedProducts = productRepository.saveAll(productList);
+
+        // iterable to List
+        List<Product> productEntityList = new ArrayList<>();
+        savedProducts.forEach(productEntityList::add);
+
+        // convert Entity ro DTOs
+        return productEntityList.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+
+    }
 }
